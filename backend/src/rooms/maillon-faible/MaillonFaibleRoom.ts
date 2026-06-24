@@ -1,6 +1,7 @@
 import { Room, Client } from "@colyseus/core";
 import { MaillonFaibleState, Player } from "./state";
-import { QUESTIONS, Question } from "./questions";
+import { Question } from "./questions";
+import { getQuestions } from "../../db/questionsRepository";
 
 interface JoinOptions {
   name?: string;
@@ -182,7 +183,7 @@ export class MaillonFaibleRoom extends Room<MaillonFaibleState> {
       p.votedFor = "";
       p.votes = 0;
     });
-    this.pool = shuffle([...QUESTIONS]);
+    this.pool = shuffle([...getQuestions()]);
     this.state.activePlayerId = "";
     this.nextTurn();
     this.startTimer();
@@ -269,7 +270,7 @@ export class MaillonFaibleRoom extends Room<MaillonFaibleState> {
   }
 
   private setQuestion() {
-    if (this.pool.length === 0) this.pool = shuffle([...QUESTIONS]);
+    if (this.pool.length === 0) this.pool = shuffle([...getQuestions()]);
     const q = this.pool.pop()!;
     this.currentAnswer = q.answer;
     this.state.question = q.question;

@@ -36,6 +36,31 @@ Premier onglet : "Creer une partie privee", un code (roomId) s'affiche.
 Second onglet : coller le code puis "Rejoindre". Les deux joueurs apparaissent
 dans la liste, synchronisee en temps reel.
 
+## Base de donnees (banque de questions)
+
+La banque de questions vit dans PostgreSQL (Drizzle ORM). Si la base n'est pas
+disponible, le serveur retombe automatiquement sur une liste de secours en
+memoire, donc le jeu fonctionne meme sans Postgres.
+
+Pour l'activer en local :
+
+```bash
+# 1. Copier les variables d'environnement (a la racine et dans backend/)
+cp .env.example .env
+cp backend/.env.example backend/.env
+# puis renseigner un mot de passe dans .env et le repercuter dans backend/.env (DATABASE_URL)
+
+# 2. Lancer Postgres (mappe sur le port 5433 de l'hote par defaut)
+docker compose up -d postgres
+
+# 3. Creer la table puis la remplir
+yarn workspace mellianjeux-backend db:push
+yarn workspace mellianjeux-backend db:seed
+```
+
+Le port hote de Postgres est configurable via `POSTGRES_PORT` dans `.env`
+(5433 par defaut, pour ne pas entrer en conflit avec un Postgres systeme).
+
 ## Build de production
 
 ```bash
@@ -54,18 +79,19 @@ Le hub et le routing prennent le jeu en compte automatiquement.
 
 ## Etat actuel
 
-Ce qui marche : hub, routing, PWA, connexion temps reel, salons prives
-(creer / rejoindre / liste des joueurs synchronisee, gestion de l'hote).
+Ce qui marche : hub, routing, PWA, salons prives temps reel, une manche complete
+(questions, timer, cagnotte en chaine, banque, validation par l'animateur),
+plusieurs manches avec votes d'elimination, ecran "Maillon Faible" et fin de
+partie. Banque de questions servie depuis PostgreSQL.
 
-A venir (mecanique de jeu) :
-
-| Etape | Contenu |
-|-------|---------|
-| 1 | Mecanique d'une manche : questions, timer, cagnotte en chaine |
-| 2 | Plusieurs manches, votes d'elimination, ecran "Maillon Faible" |
-| 3 | Comptes + banque de questions (PostgreSQL) |
-| 4 | Sons, animations, polish |
-| 5 | Parties publiques + matchmaking (Redis) |
+| Etape | Contenu | Etat |
+|-------|---------|------|
+| 1 | Mecanique d'une manche : questions, timer, cagnotte en chaine | fait |
+| 2 | Plusieurs manches, votes d'elimination, ecran "Maillon Faible" | fait |
+| 3 | Banque de questions (PostgreSQL) | fait |
+| 3b | Comptes joueurs (auth, historique) | a venir |
+| 4 | Sons, animations, polish | a venir |
+| 5 | Parties publiques + matchmaking (Redis) | a venir |
 
 ## Versions Colyseus
 

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { monitor } from "@colyseus/monitor";
@@ -5,27 +6,35 @@ import express from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { registerRooms } from "./rooms/registry";
+import { loadQuestions } from "./db/questionsRepository";
 
 const port = Number(process.env.PORT) || 2567;
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+async function main() {
+  const { count, source } = await loadQuestions();
+  console.log(`[Mellianjeux] ${count} questions chargees (${source})`);
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok", service: "mellianjeux-backend" });
-});
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
 
-app.use("/colyseus", monitor());
+  app.get("/health", (_req, res) => {
+    res.json({ status: "ok", service: "mellianjeux-backend" });
+  });
 
-const httpServer = createServer(app);
+  app.use("/colyseus", monitor());
 
-const gameServer = new Server({
-  transport: new WebSocketTransport({ server: httpServer }),
-});
+  const httpServer = createServer(app);
 
-registerRooms(gameServer);
+  const gameServer = new Server({
+    transport: new WebSocketTransport({ server: httpServer }),
+  });
 
-gameServer.listen(port);
-console.log(`[Mellianjeux] Serveur de jeu pret sur http://localhost:${port}`);
-console.log(`[Mellianjeux] Monitor : http://localhost:${port}/colyseus`);
+  registerRooms(gameServer);
+
+  gameServer.listen(port);
+  console.log(`[Mellianjeux] Serveur de jeu pret sur http://localhost:${port}`);
+  console.log(`[Mellianjeux] Monitor : http://localhost:${port}/colyseus`);
+}
+
+main();
