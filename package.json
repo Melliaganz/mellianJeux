@@ -1,0 +1,15 @@
+{
+  "name": "mellianjeux",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "yarn@4.17.0",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:back": "yarn workspace mellianjeux-backend dev",
+    "dev:front": "yarn workspace mellianjeux-frontend dev",
+    "build": "yarn workspaces foreach -A run build"
+  }
+}
