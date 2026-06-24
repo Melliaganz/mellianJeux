@@ -308,3 +308,44 @@
   color: #fbbf24;
   margin: 0;
 }
+
+.mf__round {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.mf__votegrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.mf__btn--vote {
+  background: var(--surface);
+}
+
+.mf__reveal {
+  text-align: center;
+}
+
+.mf__revealtitle {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.mf__revealname {
+  margin: 0.25rem 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.mf__winner {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
