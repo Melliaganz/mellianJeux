@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Room } from "colyseus.js";
 import { colyseus } from "../../lib/colyseus";
+import { useAuth } from "../../auth/AuthContext";
+import { apiWsTicket } from "../../lib/api";
 import "./MaillonFaible.css";
 
 const ROOM = "maillon-faible";
@@ -61,6 +63,7 @@ function chainAt(index: number): number {
 }
 
 export function MaillonFaiblePage() {
+  const { user } = useAuth();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [roundSeconds, setRoundSeconds] = useState(120);
@@ -128,11 +131,18 @@ export function MaillonFaiblePage() {
     });
   }
 
+  const displayName = user?.displayName || name || "Joueur";
+
+  async function buildOptions(extra: Record<string, unknown> = {}) {
+    const ticket = user ? await apiWsTicket() : undefined;
+    return { name: displayName, ...(ticket ? { ticket } : {}), ...extra };
+  }
+
   async function createGame() {
     setBusy(true);
     setError(null);
     try {
-      bind(await colyseus.create(ROOM, { name: name || "Joueur", roundSeconds }));
+      bind(await colyseus.create(ROOM, await buildOptions({ roundSeconds })));
     } catch {
       setError("Impossible de creer la partie. Le serveur est-il demarre ?");
     } finally {
@@ -145,7 +155,7 @@ export function MaillonFaiblePage() {
     setBusy(true);
     setError(null);
     try {
-      bind(await colyseus.joinById(code.trim(), { name: name || "Joueur" }));
+      bind(await colyseus.joinById(code.trim(), await buildOptions()));
     } catch {
       setError("Code invalide ou partie introuvable.");
     } finally {
@@ -169,15 +179,21 @@ export function MaillonFaiblePage() {
 
       {!room && (
         <section className="mf__panel">
-          <label className="mf__field">
-            <span>Votre pseudo</span>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Joueur"
-              maxLength={20}
-            />
-          </label>
+          {user ? (
+            <p className="mf__hint">
+              Connecte en tant que <strong>{user.displayName}</strong>.
+            </p>
+          ) : (
+            <label className="mf__field">
+              <span>Votre pseudo</span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Joueur"
+                maxLength={20}
+              />
+            </label>
+          )}
           <label className="mf__field">
             <span>Duree d'une manche (secondes)</span>
             <input

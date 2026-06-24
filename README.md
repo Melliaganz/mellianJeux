@@ -36,30 +36,64 @@ Premier onglet : "Creer une partie privee", un code (roomId) s'affiche.
 Second onglet : coller le code puis "Rejoindre". Les deux joueurs apparaissent
 dans la liste, synchronisee en temps reel.
 
-## Base de donnees (banque de questions)
+## Environnements dev / prod
 
-La banque de questions vit dans PostgreSQL (Drizzle ORM). Si la base n'est pas
-disponible, le serveur retombe automatiquement sur une liste de secours en
-memoire, donc le jeu fonctionne meme sans Postgres.
+Le backend charge sa config selon `NODE_ENV` : `backend/.env.development`
+(defaut) ou `backend/.env.production`, avec `backend/.env` en fallback. Chaque
+environnement pointe vers sa propre base Postgres (`mellianjeux_dev` et
+`mellianjeux_prod`), pour ne pas melanger les comptes et les donnees.
+
+Les scripts `db:push` / `db:seed` et le serveur ciblent la base de l'environnement
+courant :
+
+```bash
+yarn workspace mellianjeux-backend db:push                      # base dev
+NODE_ENV=production yarn workspace mellianjeux-backend db:push  # base prod
+```
+
+## Base de donnees (questions + comptes)
+
+PostgreSQL (Drizzle ORM) stocke la banque de questions et les comptes joueurs.
+Pour les questions, si la base est indisponible le serveur retombe sur une liste
+de secours en memoire ; le jeu reste jouable sans Postgres (mais sans comptes).
 
 Pour l'activer en local :
 
 ```bash
-# 1. Copier les variables d'environnement (a la racine et dans backend/)
-cp .env.example .env
-cp backend/.env.example backend/.env
-# puis renseigner un mot de passe dans .env et le repercuter dans backend/.env (DATABASE_URL)
+# 1. Copier les variables d'environnement
+cp .env.example .env                                # variables Docker (Postgres)
+cp backend/.env.example backend/.env.development    # config dev
+cp backend/.env.example backend/.env.production     # config prod (adapter DATABASE_URL)
+# puis renseigner un mot de passe dans .env et le repercuter dans les DATABASE_URL
 
 # 2. Lancer Postgres (mappe sur le port 5433 de l'hote par defaut)
 docker compose up -d postgres
 
-# 3. Creer la table puis la remplir
+# 3. Creer les tables puis remplir les questions (base dev)
 yarn workspace mellianjeux-backend db:push
 yarn workspace mellianjeux-backend db:seed
 ```
 
+Au premier demarrage, `docker/init/01-databases.sql` cree `mellianjeux_dev` et
+`mellianjeux_prod`. Si un volume Postgres existe deja, ce script ne se rejoue
+pas : faire `docker compose down -v` puis `up` (perte des donnees locales), ou
+creer les deux bases a la main avec `CREATE DATABASE`.
+
 Le port hote de Postgres est configurable via `POSTGRES_PORT` dans `.env`
 (5433 par defaut, pour ne pas entrer en conflit avec un Postgres systeme).
+
+## Comptes joueurs (auth)
+
+Inscription / connexion par email + mot de passe (`POST /auth/register`,
+`/auth/login`, `/auth/logout`, `GET /auth/me`). Le mot de passe est hashe avec
+scrypt (`node:crypto`, sans dependance native) et la session est un jeton opaque
+pose en cookie `httpOnly` (seul son hash est stocke en base).
+
+Comme le cookie `httpOnly` n'est pas lisible cote client et que la connexion
+Colyseus est cross-origin, l'authentification du salon passe par un **ticket WS**
+a usage unique : le front authentifie recupere un ticket via `GET /auth/ws-ticket`
+puis le transmet a Colyseus, ou `onAuth` le valide. L'auth reste optionnelle : on
+peut toujours jouer en invite avec un simple pseudo.
 
 ## Build de production
 
@@ -89,7 +123,7 @@ partie. Banque de questions servie depuis PostgreSQL.
 | 1 | Mecanique d'une manche : questions, timer, cagnotte en chaine | fait |
 | 2 | Plusieurs manches, votes d'elimination, ecran "Maillon Faible" | fait |
 | 3 | Banque de questions (PostgreSQL) | fait |
-| 3b | Comptes joueurs (auth, historique) | a venir |
+| 3b | Comptes joueurs (auth email/mot de passe, environnements dev/prod) | fait |
 | 4 | Sons, animations, polish | a venir |
 | 5 | Parties publiques + matchmaking (Redis) | a venir |
 

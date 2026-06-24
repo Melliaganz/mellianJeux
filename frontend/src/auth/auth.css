@@ -1,0 +1,127 @@
+.authbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  min-height: 2.25rem;
+  padding: 0.75rem 1rem;
+}
+
+.authbar__name {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.authbar__btn {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.authbar__btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.auth {
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.auth__nav {
+  margin-bottom: 1.5rem;
+}
+
+.auth__back {
+  color: inherit;
+  opacity: 0.8;
+  text-decoration: none;
+}
+
+.auth__card {
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.auth__title {
+  margin: 0 0 1.25rem;
+  font-size: 1.6rem;
+}
+
+.auth__tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.auth__tab {
+  flex: 1;
+  padding: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth__tab--on {
+  background: rgba(255, 255, 255, 0.16);
+  font-weight: 600;
+}
+
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.auth__field input {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  font: inherit;
+}
+
+.auth__submit {
+  margin-top: 0.25rem;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #d62828;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth__submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.auth__error {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  background: rgba(214, 40, 40, 0.18);
+  color: #ffb3b3;
+  font-size: 0.9rem;
+}

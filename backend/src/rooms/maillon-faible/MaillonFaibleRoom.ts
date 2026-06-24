@@ -2,9 +2,12 @@ import { Room, Client } from "@colyseus/core";
 import { MaillonFaibleState, Player } from "./state";
 import { Question } from "./questions";
 import { getQuestions } from "../../db/questionsRepository";
+import { consumeTicket } from "../../auth/wsTickets";
+import type { SessionUser } from "../../auth/sessions";
 
 interface JoinOptions {
   name?: string;
+  ticket?: string;
 }
 
 const CHAIN = [50, 100, 200, 300, 450, 600, 800, 1000];
@@ -121,9 +124,20 @@ export class MaillonFaibleRoom extends Room<MaillonFaibleState> {
     });
   }
 
+  onAuth(_client: Client, options: JoinOptions): SessionUser | true {
+    if (options?.ticket) {
+      const user = consumeTicket(options.ticket);
+      if (user) return user;
+    }
+    return true;
+  }
+
   onJoin(client: Client, options: JoinOptions) {
+    const account =
+      client.auth && typeof client.auth === "object" ? (client.auth as SessionUser) : null;
     const player = new Player();
-    player.name = options.name?.trim() || "Joueur";
+    player.name = account?.displayName || options.name?.trim() || "Joueur";
+    player.authenticated = !!account;
     player.isHost = this.state.players.size === 0;
     this.state.players.set(client.sessionId, player);
   }

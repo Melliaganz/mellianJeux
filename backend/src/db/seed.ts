@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "../config/env";
 import { db, pool } from "./client";
 import { questions } from "./schema";
 import { QUESTIONS } from "../rooms/maillon-faible/questions";

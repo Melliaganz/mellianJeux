@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { GAMES, type GameDefinition } from "../games/registry";
+import { AuthBar } from "../auth/AuthBar";
 import "./Home.css";
 
 export function Home() {
   return (
     <main className="home">
+      <AuthBar />
       <header className="home__header">
         <img className="home__logo" src="/assets/logo.png" alt="Les Mellianjeux" />
         <h1 className="home__title">Les Mellianjeux</h1>
