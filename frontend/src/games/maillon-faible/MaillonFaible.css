@@ -163,3 +163,148 @@
   background: var(--accent);
   color: #fff;
 }
+
+.mf__player--active {
+  outline: 2px solid var(--accent);
+}
+
+.mf__hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+}
+
+.mf__hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mf__timer {
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.mf__banktotal {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.mf__ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.25rem;
+}
+
+.mf__rung {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.mf__rung--on {
+  background: var(--accent);
+  color: #fff;
+}
+
+.mf__turn {
+  text-align: center;
+  margin: 0;
+  color: var(--muted);
+}
+
+.mf__question {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: 12px;
+}
+
+.mf__result {
+  text-align: center;
+  font-weight: 600;
+  margin: 0;
+}
+
+.mf__result--correct {
+  color: #4ade80;
+}
+
+.mf__result--incorrect {
+  color: #f87171;
+}
+
+.mf__result--banked {
+  color: #fbbf24;
+}
+
+.mf__animateur,
+.mf__answerbox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mf__expected {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid #fbbf24;
+  color: #fde68a;
+  font-size: 0.95rem;
+}
+
+.mf__given {
+  margin: 0;
+  text-align: center;
+}
+
+.mf__actions--row {
+  flex-direction: row;
+}
+
+.mf__btn--ok {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+  flex: 1;
+}
+
+.mf__btn--ko {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #fff;
+  flex: 1;
+}
+
+.mf__btn--bank {
+  background: #b45309;
+  border-color: #b45309;
+  color: #fff;
+}
+
+.mf__endtitle {
+  text-align: center;
+  margin: 0;
+}
+
+.mf__endbank {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fbbf24;
+  margin: 0;
+}
